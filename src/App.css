@@ -1,0 +1,41 @@
+body{
+  background-color: #343a40;
+}
+.main-div{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  height:60vh;
+  color:white;
+  line-height: 20px;
+}
+.header{
+  text-align: center;
+}
+.header h2{
+  font-size: 36px;
+}
+.header h1{
+  font-size: 54px;
+}
+.header h3{
+  font-size: 22px;
+}
+.logo-section{
+  font-family: Codystar,sans-serif;
+}
+.logo-section{
+  display:flex;
+  align-items: center;
+  gap:5px;
+  margin-bottom: 50px;
+}
+.main-div button{
+  background-color: #495057;
+  border-style: none;
+  padding:20px;
+  border-radius: 30px;
+  color: white;
+  font-size: 20px;
+  margin-top: 20px;
+}
