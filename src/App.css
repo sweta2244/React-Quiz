@@ -82,7 +82,7 @@ body{
 
 .score-board{
   display:flex;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 .quiz-body h3{
   margin-bottom: 1px;
@@ -114,4 +114,10 @@ body{
 }
 .clickedOption{
   transform: translateX(25px) !important;
+}
+.score-bar{
+  background-color: white;
+  height:10px;
+  border-radius: 5px;
+  overflow: hidden;
 }

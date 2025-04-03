@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import ReactLogo from "/react.svg";
 import { useRef } from "react";
 export default function Header({ handleStart, start }) {
@@ -8,7 +8,10 @@ export default function Header({ handleStart, start }) {
   const [qNumber, setQNumber] = useState(0);
   const [score, setScore] = useState(0);
   const [end, setEnd] = useState(false);
-  const [option1,setOption]=useState(null);
+  const [option1, setOption] = useState(null);
+  const[progress,setProgress]=useState(0);
+  const highscore = useRef(0);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,13 +30,21 @@ export default function Header({ handleStart, start }) {
       setScore((prev) => prev + data[qNumber].points);
   }
   function handleQNumber() {
-    if (qNumber===data.length)
-      setQNumber(0);
-    else
-      setQNumber((prev) => prev + 1);
+    setQNumber((prev) => prev + 1);
   }
   function handleNext() {
     setNext(!next);
+  }
+  function handleEnd() {
+    setEnd(false);
+    handleResultEmpty();
+    handleOptionNull();
+  }
+  function handleResultEmpty() {
+    setResult("");
+  }
+  function handleOptionNull() {
+    setOption(null);
   }
   function handleResult(index) {
     data[qNumber].correctOption === index
@@ -58,9 +69,22 @@ export default function Header({ handleStart, start }) {
           </>
         )}
 
-        {start && !end && qNumber!==data.length && (
+        {start && !end && qNumber !== data.length && (
           <div className="quiz-main-body">
             <div className="quiz-body">
+              <div className="score-bar">
+                <p
+                  style={{
+                    backgroundColor: "#1098ad",
+                    width: `${((progress) / data.length) * 100}%`,
+                    height: "10px",
+                    margin:"0px",
+                    padding:"0px",
+                    borderTopRightRadius:"4px",
+                    borderBottomRightRadius:"4px",
+                  }}
+                ></p>
+              </div>
               <div className="score-board">
                 <p>
                   Question <b>{qNumber + 1}</b>/
@@ -79,13 +103,18 @@ export default function Header({ handleStart, start }) {
               {data[qNumber].options.map((option, index) => (
                 <div key={index}>
                   <button
-                    className={`btn ${result ? "active" : ""} ${result && index===data[qNumber].correctOption?"correct":""} ${index===option1?"clickedOption":""} `}
+                    className={`btn ${result ? "active" : ""} ${
+                      result && index === data[qNumber].correctOption
+                        ? "correct"
+                        : ""
+                    } ${index === option1 ? "clickedOption" : ""} `}
                     value={index}
                     onClick={() => {
                       handleResult(index);
                       handleNext();
                       handleScore(index);
                       setOption(index);
+                      setProgress((prev)=>prev+1);
                     }}
                     disabled={result !== ""}
                   >
@@ -94,7 +123,15 @@ export default function Header({ handleStart, start }) {
                 </div>
               ))}
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                {start && !end && <Timer setEnd={setEnd} />}
+                {start && !end && (
+                  <Timer
+                    setQNumber={setQNumber}
+                    data={data}
+                    handleResult={handleResultEmpty}
+                    handleOption={handleOptionNull}
+                    handleNext={handleNext}
+                  />
+                )}
                 {next && (
                   <button
                     onClick={() => {
@@ -112,23 +149,29 @@ export default function Header({ handleStart, start }) {
             </div>
           </div>
         )}
-        {start && qNumber === data.length &&
-          (<Highscore
+        {start && qNumber === data.length && (
+          <Highscore
             score={score}
             data={data}
             handleStart={handleStart}
-            setEnd={setEnd}
-            handleQNumber={handleQNumber}
-          />)
-        }
+            handleEnd={handleEnd}
+            setQNumber={setQNumber}
+            setScore={setScore}
+            highscore={highscore}
+            setNext={setNext}
+          />
+        )}
 
         {start && end && (
           <Highscore
             score={score}
             data={data}
             handleStart={handleStart}
-            setEnd={setEnd}
-            handleQNumber={handleQNumber}
+            handleEnd={handleEnd}
+            setQNumber={setQNumber}
+            setScore={setScore}
+            highscore={highscore}
+            setNext={setNext}
           />
         )}
       </div>
@@ -136,13 +179,18 @@ export default function Header({ handleStart, start }) {
   );
 }
 
-function Timer({ setEnd }) {
+function Timer({ setQNumber, data, handleResult, handleOption }) {
   const [secondsRemaining, setSecondsRemaining] = useState(450);
   const mins = Math.floor(secondsRemaining / 60);
   const seconds = secondsRemaining % 60;
 
   useEffect(() => {
-    if (secondsRemaining <= 0) return setEnd(true);
+    if (secondsRemaining <= 0) {
+      setQNumber(data.length);
+      handleResult();
+      handleOption();
+      return;
+    }
 
     const id = setInterval(() => {
       setSecondsRemaining((prev) => prev - 1);
@@ -160,16 +208,21 @@ function Timer({ setEnd }) {
   );
 }
 
-function Highscore({ score, data, handleStart, setEnd,handleQNumber }) {
-  const highscore=useRef(0);
-  
-  function handleHighScore(){
-    if (score>highscore){
-      highscore.current=score;
+function Highscore({
+  score,
+  data,
+  handleStart,
+  handleEnd,
+  setQNumber,
+  setScore,
+  highscore,
+  setNext,
+}) {
+  function handleHighScore() {
+    if (score > highscore.current) {
+      highscore.current = score;
       return score;
-    }
-    else
-      return highscore.current;
+    } else return highscore.current;
   }
   return (
     <div>
@@ -179,13 +232,15 @@ function Highscore({ score, data, handleStart, setEnd,handleQNumber }) {
           return (total = total + curr.points);
         }, 0)}
       </button>
-      <p>(Highscore: {handleHighScore} points)</p>
+      <p>(Highscore: {handleHighScore()} points)</p>
       <button
         className="startbtn btnn"
         onClick={() => {
           handleStart();
-          setEnd(false);
-          handleQNumber();
+          handleEnd();
+          setQNumber(0);
+          setScore(0);
+          setNext(false);
         }}
       >
         Restart
