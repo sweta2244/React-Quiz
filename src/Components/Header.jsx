@@ -159,6 +159,7 @@ export default function Header({ handleStart, start }) {
             setScore={setScore}
             highscore={highscore}
             setNext={setNext}
+            setProgress={setProgress}
           />
         )}
 
@@ -172,6 +173,7 @@ export default function Header({ handleStart, start }) {
             setScore={setScore}
             highscore={highscore}
             setNext={setNext}
+            setProgress={setProgress}
           />
         )}
       </div>
@@ -217,6 +219,7 @@ function Highscore({
   setScore,
   highscore,
   setNext,
+  setProgress
 }) {
   function handleHighScore() {
     if (score > highscore.current) {
@@ -241,6 +244,7 @@ function Highscore({
           setQNumber(0);
           setScore(0);
           setNext(false);
+          setProgress(0);
         }}
       >
         Restart
