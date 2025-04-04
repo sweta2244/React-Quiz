@@ -60,13 +60,16 @@ body{
 }
 .btnn{
   background-color: #495057;
-  border-style: none;
+  border:2px solid #495057;
   padding:14px;
   border-radius: 30px;
   color: white;
   margin-top: 20px;
   width:100%;
   font-size: 18px;
+}
+.btnn:hover{
+  background-color:#343a40 ;
 }
 
 .active{

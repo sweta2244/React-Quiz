@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import ReactLogo from "/react.svg";
 import { useRef } from "react";
+import Timer from "./Timer";
+import Highscore from "./Highscore";
 export default function Header({ handleStart, start }) {
   const [data, setdata] = useState(null);
   const [result, setResult] = useState("");
@@ -9,7 +11,7 @@ export default function Header({ handleStart, start }) {
   const [score, setScore] = useState(0);
   const [end, setEnd] = useState(false);
   const [option1, setOption] = useState(null);
-  const[progress,setProgress]=useState(0);
+  const [progress,setProgress]=useState(0);
   const highscore = useRef(0);
 
   useEffect(() => {
@@ -177,78 +179,6 @@ export default function Header({ handleStart, start }) {
           />
         )}
       </div>
-    </div>
-  );
-}
-
-function Timer({ setQNumber, data, handleResult, handleOption }) {
-  const [secondsRemaining, setSecondsRemaining] = useState(450);
-  const mins = Math.floor(secondsRemaining / 60);
-  const seconds = secondsRemaining % 60;
-
-  useEffect(() => {
-    if (secondsRemaining <= 0) {
-      setQNumber(data.length);
-      handleResult();
-      handleOption();
-      return;
-    }
-
-    const id = setInterval(() => {
-      setSecondsRemaining((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(id);
-  }, [secondsRemaining]);
-
-  return (
-    <div className="timer">
-      {mins < 10 && "0"}
-      {mins}:{seconds < 10 && "0"}
-      {seconds}
-    </div>
-  );
-}
-
-function Highscore({
-  score,
-  data,
-  handleStart,
-  handleEnd,
-  setQNumber,
-  setScore,
-  highscore,
-  setNext,
-  setProgress
-}) {
-  function handleHighScore() {
-    if (score > highscore.current) {
-      highscore.current = score;
-      return score;
-    } else return highscore.current;
-  }
-  return (
-    <div>
-      <button className="btnScored-result">
-        You scored {score} out of{" "}
-        {data.reduce((total, curr) => {
-          return (total = total + curr.points);
-        }, 0)}
-      </button>
-      <p>(Highscore: {handleHighScore()} points)</p>
-      <button
-        className="startbtn btnn"
-        onClick={() => {
-          handleStart();
-          handleEnd();
-          setQNumber(0);
-          setScore(0);
-          setNext(false);
-          setProgress(0);
-        }}
-      >
-        Restart
-      </button>
     </div>
   );
 }
