@@ -79,9 +79,6 @@ body{
   transform: none;
   background-color:#ffa94d;
 }
-.active[value="React"]{
-  background-color: pink;
-}
 
 .score-board{
   display:flex;
@@ -123,4 +120,8 @@ body{
   height:10px;
   border-radius: 5px;
   overflow: hidden;
+}
+.timer-next-flex{
+  display:flex;
+  justify-content: space-between;
 }
