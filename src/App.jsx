@@ -36,5 +36,3 @@ function App() {
 }
 
 export default App;
-
-// for api:json-server --watch data/questions.json --port 9000

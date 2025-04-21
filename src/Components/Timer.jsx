@@ -12,7 +12,7 @@ export default function Timer() {
         dispatch({type:"time up",l:data.length});
         return;
       }
-  
+    
       const id = setInterval(() => {
         setSecondsRemaining((prev) => prev - 1);
       }, 1000);

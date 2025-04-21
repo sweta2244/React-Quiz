@@ -61,6 +61,7 @@ function reducer(state, action) {
       };
   }
 }
+
 export default function QuizContext({children}) {
   const highscore = useRef(0);
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -69,7 +70,7 @@ export default function QuizContext({children}) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:9000/questions");
+        const response = await fetch("https://raw.githubusercontent.com/sweta2244/react-quiz-api/refs/heads/main/questions.json");
         const json = await response.json();
         setdata(json);
       } catch (error) {
