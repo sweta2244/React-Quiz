@@ -70,9 +70,9 @@ export default function QuizContext({children}) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://raw.githubusercontent.com/sweta2244/react-quiz-api/refs/heads/main/questions.json");
+        const response = await fetch("https://raw.githubusercontent.com/sweta2244/react-quiz-api/main/questions.json");
         const json = await response.json();
-        setdata(json);
+        setdata(json.questions);
       } catch (error) {
         console.log("error", error);
       }
